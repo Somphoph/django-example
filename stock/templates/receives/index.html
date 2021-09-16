@@ -1,0 +1,43 @@
+{% extends "default.html" %}
+
+{% block title %}Receive Order{% endblock %}
+{% block header %}Receive{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 text-end">
+                <button class="btn btn-primary" type="button" onclick="location.href='/receive'">Add</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Order No</th>
+                        <th>Receive Date</th>
+                        <th>Vendor</th>
+                        <th>Amount</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% if receive_list %}
+                        {% for receive in receive_list %}
+                            <tr>
+                                <td>{{ receive.receive_no }}</td>
+                                <td>{{ receive.receive_date }}</td>
+                                <td>{{ receive.receive_vendor }}</td>
+                                <td>{{ receive.receive_amount }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="4">No receive are available.</td>
+                        </tr>
+                    {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

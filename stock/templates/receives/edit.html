@@ -1,0 +1,28 @@
+{% extends "default.html" %}
+
+{% block title %}Receive Order{% endblock %}
+{% block header %}Receive{% endblock %}
+{% block content %}
+    <div class="container">
+        <form class="row g-3">
+            <div class="col-md-6">
+                <label for="receiveNo" class="form-label">Receive No</label>
+                <input type="text" class="form-control" id="receiveNo">
+            </div>
+             <div class="col-md-6">
+                <label for="receiveDate" class="form-label">Receive Date</label>
+                <input type="datetime-local" class="form-control" id="receiveDate">
+            </div>
+        </form>
+        <form class="row g-3">
+            <div class="col-md-6">
+                <label for="vendor" class="form-label">Vendor</label>
+                <select id="vendor" class="form-control"></select>
+            </div>
+             <div class="col-md-6">
+                <label for="amount" class="form-label">Receive Date</label>
+                <input readonly type="number" class="form-control" id="amount">
+            </div>
+        </form>
+    </div>
+{% endblock %}
