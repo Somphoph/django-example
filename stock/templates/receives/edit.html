@@ -3,26 +3,63 @@
 {% block title %}Receive Order{% endblock %}
 {% block header %}Receive{% endblock %}
 {% block content %}
-    <div class="container">
-        <form class="row g-3">
+<div class="container">
+    <form>
+        <div class="row">
+            <div class="col-md-12 text-end">
+                <div class="btn-group" role="group" aria-label="Control">
+                    <button class="btn btn-primary" type="submit">Save</button>
+                    <button class="btn btn-secondary" type="button" onclick="window.history.back()">Cancel</button>
+                </div>
+            </div>
+        </div>
+        <div class="row g-3">
             <div class="col-md-6">
                 <label for="receiveNo" class="form-label">Receive No</label>
                 <input type="text" class="form-control" id="receiveNo">
             </div>
-             <div class="col-md-6">
+            <div class="col-md-6">
                 <label for="receiveDate" class="form-label">Receive Date</label>
                 <input type="datetime-local" class="form-control" id="receiveDate">
             </div>
-        </form>
-        <form class="row g-3">
             <div class="col-md-6">
                 <label for="vendor" class="form-label">Vendor</label>
                 <select id="vendor" class="form-control"></select>
             </div>
-             <div class="col-md-6">
-                <label for="amount" class="form-label">Receive Date</label>
+            <div class="col-md-6">
+                <label for="amount" class="form-label">Amount</label>
                 <input readonly type="number" class="form-control" id="amount">
             </div>
-        </form>
+        </div>
+    </form>
+    <br/>
+    <div class="row">
+        <div class="col-md-12">
+            <h4>Detail</h4>
+        </div>
     </div>
+    <div class="row">
+        <div class="col-md-12 text-end">
+            <button class="btn btn-primary" type="button">Add</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Qty</th>
+                        <th>Cost</th>
+                        <th>PO</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 {% endblock %}
