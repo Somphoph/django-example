@@ -3,63 +3,83 @@
 {% block title %}Receive Order{% endblock %}
 {% block header %}Receive{% endblock %}
 {% block content %}
-<div class="container">
-    <form>
-        <div class="row">
-            <div class="col-md-12 text-end">
-                <div class="btn-group" role="group" aria-label="Control">
-                    <button class="btn btn-primary" type="submit">Save</button>
-                    <button class="btn btn-secondary" type="button" onclick="window.history.back()">Cancel</button>
+    <div class="container">
+        <form action="/receive/{{ object.receive_id }}" method="post" enctype="application/x-www-form-urlencoded">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-12 text-end">
+                    <div class="btn-group" role="group" aria-label="Control">
+                        <button class="btn btn-primary" type="submit">Save</button>
+                        <button class="btn btn-secondary" type="button" onclick="location.href='/'">Cancel</button>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="row g-3">
-            <div class="col-md-6">
-                <label for="receiveNo" class="form-label">Receive No</label>
-                <input type="text" class="form-control" id="receiveNo">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label for="receiveNo" class="form-label">Receive No</label>
+                    <input type="text" class="form-control" id="receiveNo" name="receive_no"
+                           value="{{ object.receive_no }}"/>
+                </div>
+                <div class="col-md-6">
+                    <label for="receiveDate" class="form-label">Receive Date</label>
+                    <input type="datetime-local" class="form-control" id="receiveDate" name="receive_date"
+                           value="{{ object.receive_date|date:'Y-m-d\TH:i:s' }}"/>
+                </div>
             </div>
-            <div class="col-md-6">
-                <label for="receiveDate" class="form-label">Receive Date</label>
-                <input type="datetime-local" class="form-control" id="receiveDate">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label for="vendor" class="form-label">Vendor</label>
+                    <select id="vendor" name="receive_vendor" class="form-control">
+                        <option>-- กรุณาเลือก --</option>
+                        {% for vendor in vendor_list %}
+                            {% if object.receive_vendor == vendor.vendor_id %}
+                                <option selected value="{{ vendor.vendor_id }}">{{ vendor.vendor_name }}</option>
+                            {% else %}
+                                <option value="{{ vendor.vendor_id }}">{{ vendor.vendor_name }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="amount" class="form-label">Amount</label>
+                    <input readonly type="number" class="form-control" id="amount" name="receive_amount"
+                           value="{{ object.receive_amount }}"/>
+                </div>
             </div>
-            <div class="col-md-6">
-                <label for="vendor" class="form-label">Vendor</label>
-                <select id="vendor" class="form-control"></select>
-            </div>
-            <div class="col-md-6">
-                <label for="amount" class="form-label">Amount</label>
-                <input readonly type="number" class="form-control" id="amount">
+            <input type="hidden" name="receive_id" value="{{ object.receive_id }}">
+        </form>
+        <br/>
+        <div class="row">
+            <div class="col-md-12">
+                <h4>Detail</h4>
             </div>
         </div>
-    </form>
-    <br/>
-    <div class="row">
-        <div class="col-md-12">
-            <h4>Detail</h4>
+        <div class="row">
+            <div class="col-md-12 text-end">
+                <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                    Add
+                </button>
+                {% include "receives/dlg-detail.html" %}
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12 text-end">
-            <button class="btn btn-primary" type="button">Add</button>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <table class="table">
-                <thead>
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table">
+                    <thead>
                     <tr>
                         <th>Product</th>
                         <th>Qty</th>
                         <th>Cost</th>
                         <th>PO</th>
                     </tr>
-                </thead>
-                <tbody>
+                    </thead>
+                    <tbody>
                     <tr>
                     </tr>
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
+
 {% endblock %}

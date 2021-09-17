@@ -4,6 +4,6 @@ from . import views
 
 urlpatterns = {
     path('', views.IndexView.as_view(), name='index'),
-    path('receive/<int:pk>', views.ReceiveEdit.as_view(), name='receive'),
-    path('receive', views.receive_add, name='receive'),
+    path('receive/<int:receive_id>', views.receive_edit, name='edit'),
+    path('receive', views.receive_add, name='add'),
 }

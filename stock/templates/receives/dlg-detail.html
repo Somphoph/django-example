@@ -1,7 +1,40 @@
-{% extends "dialog.html" %}
+{% extends "static-modal.html" %}
 
 {% block title %}Receive Detail{% endblock %}
 
 {% block content %}
-
+    <form>
+        <div class="container">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label for="product" class="form-label">Product</label>
+                    <select id="product" class="form-control"></select>
+                </div>
+                <div class="col-md-6">
+                    <label for="qty" class="form-label">QTY</label>
+                    <input type="number" class="form-control" id="qty">
+                </div>
+            </div>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label for="cost" class="form-label">Cost</label>
+                    <input type="number" class="form-control" id="cost" />
+                </div>
+                <div class="col-md-6">
+                    <label for="amount" class="form-label">Amount</label>
+                    <input type="number" class="form-control" id="amount">
+                </div>
+            </div>
+            <div class="row g-3">
+                <div class="col-md-12">
+                    <label for="po" class="form-label">PO</label>
+                    <input type="text" class="form-control" id="po" />
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+{% block button %}
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    <button type="button" class="btn btn-primary">Save</button>
 {% endblock %}

@@ -18,6 +18,7 @@
                         <th>Receive Date</th>
                         <th>Vendor</th>
                         <th>Amount</th>
+                        <th>Edit</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -28,6 +29,7 @@
                                 <td>{{ receive.receive_date }}</td>
                                 <td>{{ receive.receive_vendor }}</td>
                                 <td>{{ receive.receive_amount }}</td>
+                                <td><button class="btn btn-primary" type="button" onclick="location.href='/receive/{{ receive.receive_id }}'">Edit</button></td>
                             </tr>
                         {% endfor %}
                     {% else %}
