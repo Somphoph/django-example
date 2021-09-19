@@ -32,7 +32,7 @@ def receive_edit(request, receive_id):
     vendor_list = Vendor.objects.order_by('-vendor_name')
     detail_list = ReceiveOrderDetail.objects.filter(
         receive_id=receive_id).order_by('-receive_detail_id')
-    return render(request, 'receives/edit.html', {'vendor_list': vendor_list, 'object': receive, 'detail_list': detail_list})
+    return render(request, 'receives/edit.html', {'vendor_list': vendor_list, 'object': receive, 'detail_list': detail_list, 'product_list': product_list})
 
 
 def receive_add(request):
@@ -78,7 +78,7 @@ def receive_detail_edit(request, detail_id):
                 receive_id=detail.receive_id).aggregate(total=Sum('amount', field="qty * cost"))['total']
             receive.save()
             return redirect('/receive/'+str(receive.receive_id))
-    else :
+    else:
         return HttpResponse(status=404)
 
 
