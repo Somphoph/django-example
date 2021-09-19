@@ -4,7 +4,7 @@
 {% block header %}Receive{% endblock %}
 {% block content %}
     <div class="container">
-        <form action="/receive/{{ object.receive_id }}" method="post" enctype="application/x-www-form-urlencoded">
+        <form action="/receive/{{object.receive_id|default:'' }}" method="post" enctype="application/x-www-form-urlencoded">
             {% csrf_token %}
             <div class="row">
                 <div class="col-md-12 text-end">
@@ -46,7 +46,7 @@
                            value="{{ object.receive_amount }}"/>
                 </div>
             </div>
-            <input type="hidden" name="receive_id" value="{{ object.receive_id }}">
+            <input type="hidden" name="receive_id" value="{{object.receive_id|default:"" }}">
         </form>
         <br/>
         <div class="row">
@@ -71,15 +71,42 @@
                         <th>Qty</th>
                         <th>Cost</th>
                         <th>PO</th>
+                        <th>Edit</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                    </tr>
+                    {% if detail_list %}
+                        {% for detail in detail_list %}
+                        <tr>
+                            <td>{{ detail.product_id }}</td>
+                            <td>{{ detail.qty }}</td>
+                            <td>{{ detail.cost }}</td>
+                            <td>{{ detail.po }}</td>
+                            <td><button class="btn btn-primary" type="button" onclick="editClick(this)">Edit</button></td>
+                        </tr>
+                        {% endfor %}
+                    {% endif %}
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
+    <script>
+        var myModal = new bootstrap.Modal(document.getElementById('staticBackdrop'));
+        function editClick(o){
+            let row = $(o).parent().parent();
+            let product_id=row.find('td:nth-child(0)').text();
+            let qty=row.find('td:nth-child(1)').text();
+            let cost=row.find('td:nth-child(2)').text();
+            let po=row.find('td:nth-child(3)').text();
 
+            $('#product').val(product_id);
+            $('#qty').val(qty);
+            $('#cost').val(cost);
+            $('#po').val(po);
+            myModal.show();
+        }
+
+
+    </script>
 {% endblock %}

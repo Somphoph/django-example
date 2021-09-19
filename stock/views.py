@@ -1,9 +1,11 @@
+from django.db.models import fields
+from django.db.models.aggregates import Sum
 from django.http import HttpResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import redirect, render, get_object_or_404
 from django.template import loader
 from django.views import generic
 
-from stock.models import Vendor, ReceiveOrder
+from stock.models import Product, ReceiveOrderDetail, Vendor, ReceiveOrder
 
 
 class IndexView(generic.ListView):
@@ -24,9 +26,13 @@ def receive_edit(request, receive_id):
         receive.receive_vendor = post['receive_vendor']
         receive.receive_amount = post['receive_amount']
         receive.save()
+        return redirect('/receive/'+str(receive.receive_id))
 
+    product_list = Product.objects.order_by('-product_name')
     vendor_list = Vendor.objects.order_by('-vendor_name')
-    return render(request, 'receives/edit.html', {'vendor_list': vendor_list, 'object': receive})
+    detail_list = ReceiveOrderDetail.objects.filter(
+        receive_id=receive_id).order_by('-receive_detail_id')
+    return render(request, 'receives/edit.html', {'vendor_list': vendor_list, 'object': receive, 'detail_list': detail_list})
 
 
 def receive_add(request):
@@ -40,6 +46,40 @@ def receive_add(request):
 
     vendor_list = Vendor.objects.order_by('-vendor_name')
     return render(request, 'receives/edit.html', {'vendor_list': vendor_list, 'object': receive})
+
+
+def receive_detail_add(request, receive_id):
+    if request.method == 'POST':
+        if not request.POST['receive_id']:
+            detail = ReceiveOrderDetail()
+            post = request.POST
+            detail = ReceiveOrderDetail(product_id=post['product_id'], qty=post['qty'],
+                                        cost=post['cost'], po=post['po'])
+            detail.save()
+            receive = get_object_or_404(ReceiveOrder, pk=receive_id)
+            receive.receive_amount = ReceiveOrderDetail.objects.filter(
+                receive_id=receive_id).aggregate(total=Sum('amount', field="qty * cost"))['total']
+            receive.save()
+            return redirect('/receive/'+str(receive.receive_id))
+    else:
+        return HttpResponse(status=404)
+
+
+def receive_detail_edit(request, detail_id):
+    if request.method == 'POST':
+        if not request.POST['receive_id']:
+            detail = get_object_or_404(ReceiveOrderDetail, pk=detail_id)
+            post = request.POST
+            detail = ReceiveOrderDetail(product_id=post['product_id'], qty=post['qty'],
+                                        cost=post['cost'], po=post['po'])
+            detail.save()
+            receive = get_object_or_404(ReceiveOrder, pk=detail.receive_id)
+            receive.receive_amount = ReceiveOrderDetail.objects.filter(
+                receive_id=detail.receive_id).aggregate(total=Sum('amount', field="qty * cost"))['total']
+            receive.save()
+            return redirect('/receive/'+str(receive.receive_id))
+    else :
+        return HttpResponse(status=404)
 
 
 def index(request):
