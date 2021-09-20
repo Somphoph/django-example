@@ -92,7 +92,7 @@
         </div>
     </div>
     <script>
-        var myModal = new bootstrap.Modal(document.getElementById('staticBackdrop'));
+        let myModal = new bootstrap.Modal(document.getElementById('staticBackdrop'));
         function editClick(o){
             let row = $(o).parent().parent();
             let product_id=row.find('td:nth-child(0)').text();

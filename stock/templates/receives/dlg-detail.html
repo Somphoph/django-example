@@ -3,49 +3,54 @@
 {% block title %}Receive Detail{% endblock %}
 
 {% block content %}
-<form action="/receive/details/{{detail.receive_detail_id|default:'' }}" enctype="application/x-www-form-urlencoded">
-    <input type="hidden" name="receive_id" value="{{object.receive_id|default:'' }}" />
-    <input type="hidden" name="receive_detail_id" value="{{detail.receive_detail_id}}" />
-    <div class="container">
-        <div class="row g-3">
-            <div class="col-md-6">
-                <label for="product" class="form-label">Product</label>
-                <select id="product" class="form-control">
-                    <option>-- กรุณาเลือก --</option>
-                    {% for product in product_list %}
-                        {% if detail.product_id == product.product_id %}
-                            <option selected value="{{ product.product_id }}">{{ product.product_name }}</option>
-                        {% else %}
-                            <option value="{{ vendor.product_id }}">{{ vendor.product_name }}</option>
-                        {% endif %}
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="col-md-6">
-                <label for="qty" class="form-label">QTY</label>
-                <input type="number" class="form-control" id="qty">
+    <form action="/receive/details/{{ detail.receive_detail_id|default:'' }}"
+          enctype="application/x-www-form-urlencoded" method="post">
+    {% csrf_token %}
+        <input type="hidden" name="receive_id" value="{{ object.receive_id|default:'' }}"/>
+        <input type="hidden" name="receive_detail_id" value="{{ detail.receive_detail_id }}"/>
+        <div class="modal-body">
+            <div class="container">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="product" class="form-label">Product</label>
+                        <select id="product" class="form-control">
+                            <option>-- กรุณาเลือก --</option>
+                            {% for product in product_list %}
+                                {% if detail.product_id == product.product_id %}
+                                    <option selected
+                                            value="{{ product.product_id }}">{{ product.product_name }}</option>
+                                {% else %}
+                                    <option value="{{ product.product_id }}">{{ product.product_name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="qty" class="form-label">QTY</label>
+                        <input type="number" class="form-control" id="qty">
+                    </div>
+                </div>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="cost" class="form-label">Cost</label>
+                        <input type="number" class="form-control" id="cost"/>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="amount" class="form-label">Amount</label>
+                        <input type="number" class="form-control" id="amount">
+                    </div>
+                </div>
+                <div class="row g-3">
+                    <div class="col-md-12">
+                        <label for="po" class="form-label">PO</label>
+                        <input type="text" class="form-control" id="po"/>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="row g-3">
-            <div class="col-md-6">
-                <label for="cost" class="form-label">Cost</label>
-                <input type="number" class="form-control" id="cost" />
-            </div>
-            <div class="col-md-6">
-                <label for="amount" class="form-label">Amount</label>
-                <input type="number" class="form-control" id="amount">
-            </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save</button>
         </div>
-        <div class="row g-3">
-            <div class="col-md-12">
-                <label for="po" class="form-label">PO</label>
-                <input type="text" class="form-control" id="po" />
-            </div>
-        </div>
-    </div>
-</form>
-{% endblock %}
-{% block button %}
-<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-<button type="submit" class="btn btn-primary">Save</button>
+    </form>
 {% endblock %}
