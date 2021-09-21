@@ -1,4 +1,4 @@
-from django.db.models import fields
+from django.db.models import fields, F
 from django.db.models.aggregates import Sum
 from django.http import HttpResponse
 from django.shortcuts import redirect, render, get_object_or_404
@@ -26,13 +26,15 @@ def receive_edit(request, receive_id):
         receive.receive_vendor = post['receive_vendor']
         receive.receive_amount = post['receive_amount']
         receive.save()
-        return redirect('/receive/'+str(receive.receive_id))
+        return redirect('/receive/' + str(receive.receive_id))
 
     product_list = Product.objects.order_by('-product_name')
     vendor_list = Vendor.objects.order_by('-vendor_name')
     detail_list = ReceiveOrderDetail.objects.filter(
         receive_id=receive_id).order_by('-receive_detail_id')
-    return render(request, 'receives/edit.html', {'vendor_list': vendor_list, 'object': receive, 'detail_list': detail_list, 'product_list': product_list})
+    return render(request, 'receives/edit.html',
+                  {'vendor_list': vendor_list, 'object': receive, 'detail_list': detail_list,
+                   'product_list': product_list})
 
 
 def receive_add(request):
@@ -50,17 +52,16 @@ def receive_add(request):
 
 def receive_detail_add(request, receive_id):
     if request.method == 'POST':
-        if not request.POST['receive_id']:
-            detail = ReceiveOrderDetail()
+        if receive_id:
             post = request.POST
             detail = ReceiveOrderDetail(product_id=post['product_id'], qty=post['qty'],
-                                        cost=post['cost'], po=post['po'])
+                                        cost=post['cost'], po=post['po'], receive_id=receive_id)
             detail.save()
             receive = get_object_or_404(ReceiveOrder, pk=receive_id)
             receive.receive_amount = ReceiveOrderDetail.objects.filter(
-                receive_id=receive_id).aggregate(total=Sum('amount', field="qty * cost"))['total']
+                receive_id=receive_id).aggregate(total=Sum(F('qty') * F('cost'))).get('total')
             receive.save()
-            return redirect('/receive/'+str(receive.receive_id))
+            return redirect('/receive/' + str(receive.receive_id))
     else:
         return HttpResponse(status=404)
 
@@ -77,7 +78,7 @@ def receive_detail_edit(request, detail_id):
             receive.receive_amount = ReceiveOrderDetail.objects.filter(
                 receive_id=detail.receive_id).aggregate(total=Sum('amount', field="qty * cost"))['total']
             receive.save()
-            return redirect('/receive/'+str(receive.receive_id))
+            return redirect('/receive/' + str(receive.receive_id))
     else:
         return HttpResponse(status=404)
 

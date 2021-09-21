@@ -3,7 +3,7 @@
 {% block title %}Receive Detail{% endblock %}
 
 {% block content %}
-    <form action="/receive/details/{{ detail.receive_detail_id|default:'' }}"
+    <form action="/receive/{{ object.receive_id|default:'' }}/details/{{ detail.receive_detail_id|default:'' }}"
           enctype="application/x-www-form-urlencoded" method="post">
     {% csrf_token %}
         <input type="hidden" name="receive_id" value="{{ object.receive_id|default:'' }}"/>
@@ -13,7 +13,7 @@
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label for="product" class="form-label">Product</label>
-                        <select id="product" class="form-control">
+                        <select name="product_id" id="product" class="form-control">
                             <option>-- กรุณาเลือก --</option>
                             {% for product in product_list %}
                                 {% if detail.product_id == product.product_id %}
@@ -27,23 +27,23 @@
                     </div>
                     <div class="col-md-6">
                         <label for="qty" class="form-label">QTY</label>
-                        <input type="number" class="form-control" id="qty">
+                        <input name="qty" type="number" class="form-control" id="qty">
                     </div>
                 </div>
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label for="cost" class="form-label">Cost</label>
-                        <input type="number" class="form-control" id="cost"/>
+                        <input name="cost" type="number" class="form-control" id="cost"/>
                     </div>
                     <div class="col-md-6">
                         <label for="amount" class="form-label">Amount</label>
-                        <input type="number" class="form-control" id="amount">
+                        <input name="amount" type="number" class="form-control" id="amount">
                     </div>
                 </div>
                 <div class="row g-3">
                     <div class="col-md-12">
                         <label for="po" class="form-label">PO</label>
-                        <input type="text" class="form-control" id="po"/>
+                        <input name="po" type="text" class="form-control" id="po"/>
                     </div>
                 </div>
             </div>
