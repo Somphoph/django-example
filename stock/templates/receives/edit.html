@@ -56,9 +56,15 @@
         </div>
         <div class="row">
             <div class="col-md-12 text-end">
+                {% if object.receive_id %}
                 <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                     Add
                 </button>
+                {% else %}
+                <button disabled class="btn btn-primary" type="button">
+                    Add
+                </button>
+                {% endif %}
                 {% include "receives/dlg-detail.html" %}
             </div>
         </div>
