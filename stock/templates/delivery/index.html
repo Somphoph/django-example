@@ -1,0 +1,43 @@
+{% extends "default.html" %}
+
+{% block title %}Delivery Order{% endblock %}
+{% block header %}Delivery{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 text-end">
+                <button class="btn btn-primary" type="button" onclick="location.href='/deliveries'">Add</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Delivery No</th>
+                        <th>Delivery Date</th>
+                        <th>Customer</th>
+                        <th style="width: 50px;">Edit</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% if delivery_list %}
+                        {% for object in delivery_list %}
+                            <tr>
+                                <td>{{ object.delivery_no }}</td>
+                                <td>{{ object.delivery_date }}</td>
+                                <td>{{ object.customer }}</td>
+                                <td><button class="btn btn-primary" type="button" onclick="location.href='/deliveries/{{ object.delivery_id }}'">Edit</button></td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="4">No receive are available.</td>
+                        </tr>
+                    {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,45 +1,6 @@
 from django.db import models
 
 
-class ReceiveOrder(models.Model):
-    receive_id = models.AutoField(primary_key=True)
-    receive_no = models.CharField(max_length=10)
-    receive_date = models.DateTimeField()
-    receive_vendor = models.IntegerField()
-    receive_amount = models.IntegerField()
-
-
-class ReceiveOrderDetail(models.Model):
-    receive_detail_id = models.AutoField(primary_key=True)
-    receive_id = models.IntegerField()
-    product_id = models.IntegerField()
-    qty = models.IntegerField()
-    cost = models.DecimalField(max_digits=6, decimal_places=2)
-    po = models.CharField(max_length=10)
-
-
-class DeliveryOrder(models.Model):
-    delivery_id = models.AutoField(primary_key=True)
-    delivery_no = models.CharField(max_length=10)
-    delivery_date = models.DateTimeField()
-    customer_id = models.IntegerField()
-
-
-class DeliveryOrderDetail(models.Model):
-    delivery_detail_id = models.AutoField(primary_key=True)
-    delivery_id = models.IntegerField()
-    product_id = models.IntegerField()
-    qty = models.IntegerField()
-    price = models.DecimalField(max_digits=6, decimal_places=2)
-    so = models.CharField(max_length=10)
-    delivery_receive_id = models.IntegerField()
-
-
-class DeliveryOrderDetailReceiveUpdate(models.Model):
-    delivery_receive_id = models.AutoField(primary_key=True)
-    sum_of_delivery_detail_qty = models.IntegerField()
-
-
 class Product(models.Model):
     def __str__(self):
         return self.product_name
@@ -67,3 +28,42 @@ class Customer(models.Model):
     customer_full_name = models.CharField(max_length=150)
     customer_addr1 = models.CharField(max_length=200)
     customer_addr2 = models.CharField(max_length=200)
+
+
+class ReceiveOrder(models.Model):
+    receive_id = models.AutoField(primary_key=True)
+    receive_no = models.CharField(max_length=10)
+    receive_date = models.DateTimeField()
+    vendor = models.ForeignKey(Vendor, on_delete=models.PROTECT)
+    receive_amount = models.IntegerField()
+
+
+class ReceiveOrderDetail(models.Model):
+    receive_detail_id = models.AutoField(primary_key=True)
+    receive_id = models.IntegerField()
+    product = models.ForeignKey(Product, on_delete=models.PROTECT)
+    qty = models.IntegerField()
+    cost = models.DecimalField(max_digits=6, decimal_places=2)
+    po = models.CharField(max_length=10)
+
+
+class DeliveryOrder(models.Model):
+    delivery_id = models.AutoField(primary_key=True)
+    delivery_no = models.CharField(max_length=10)
+    delivery_date = models.DateTimeField()
+    customer = models.ForeignKey(Customer, on_delete=models.PROTECT)
+
+
+class DeliveryOrderDetail(models.Model):
+    delivery_detail_id = models.AutoField(primary_key=True)
+    delivery_id = models.IntegerField()
+    product = models.ForeignKey(Product, on_delete=models.PROTECT)
+    qty = models.IntegerField()
+    price = models.DecimalField(max_digits=6, decimal_places=2)
+    so = models.CharField(max_length=10)
+    delivery_receive_id = models.IntegerField()
+
+
+class DeliveryOrderDetailReceiveUpdate(models.Model):
+    delivery_receive_id = models.AutoField(primary_key=True)
+    sum_of_delivery_detail_qty = models.IntegerField()

@@ -6,7 +6,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12 text-end">
-                <button class="btn btn-primary" type="button" onclick="location.href='/receive'">Add</button>
+                <button class="btn btn-primary" type="button" onclick="location.href='/receives/'">Add</button>
             </div>
         </div>
         <div class="row">
@@ -18,7 +18,7 @@
                         <th>Receive Date</th>
                         <th>Vendor</th>
                         <th>Amount</th>
-                        <th>Edit</th>
+                        <th style="width: 50px;">Edit</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -29,7 +29,7 @@
                                 <td>{{ receive.receive_date }}</td>
                                 <td>{{ receive.receive_vendor }}</td>
                                 <td>{{ receive.receive_amount }}</td>
-                                <td><button class="btn btn-primary" type="button" onclick="location.href='/receive/{{ receive.receive_id }}'">Edit</button></td>
+                                <td><button class="btn btn-primary" type="button" onclick="location.href='/receives/{{ receive.receive_id }}'">Edit</button></td>
                             </tr>
                         {% endfor %}
                     {% else %}

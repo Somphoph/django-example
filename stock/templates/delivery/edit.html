@@ -1,53 +1,48 @@
 {% extends "default.html" %}
 
-{% block title %}Receive Order{% endblock %}
-{% block header %}Receive{% endblock %}
+{% block title %}Delivery Order{% endblock %}
+{% block header %}Delivery{% endblock %}
 {% block content %}
     <div class="container">
-        <form action="/receives/{{ object.receive_id|default:'' }}" method="post"
+        <form action="/deliveries/{{ object.receive_id|default:'' }}" method="post"
               enctype="application/x-www-form-urlencoded">
             {% csrf_token %}
             <div class="row">
                 <div class="col-md-12 text-end">
                     <div class="btn-group" role="group" aria-label="Control">
                         <button class="btn btn-primary" type="submit">Save</button>
-                        <button class="btn btn-secondary" type="button" onclick="location.href='/'">Cancel</button>
+                        <button class="btn btn-secondary" type="button" onclick="location.href='/deliveries/view'">Cancel</button>
                     </div>
                 </div>
             </div>
             <div class="row g-3">
                 <div class="col-md-6">
-                    <label for="receiveNo" class="form-label">Receive No</label>
-                    <input type="text" class="form-control" id="receiveNo" name="receive_no"
-                           value="{{ object.receive_no }}"/>
+                    <label for="deliveryNo" class="form-label">Delivery No</label>
+                    <input type="text" class="form-control" id="deliveryNo" name="delivery_no"
+                           value="{{ object.delivery_no }}"/>
                 </div>
                 <div class="col-md-6">
-                    <label for="receiveDate" class="form-label">Receive Date</label>
-                    <input type="datetime-local" class="form-control" id="receiveDate" name="receive_date"
-                           value="{{ object.receive_date|date:'Y-m-d\TH:i:s' }}"/>
+                    <label for="deliveryDate" class="form-label">Delivery Date</label>
+                    <input type="datetime-local" class="form-control" id="deliveryDate" name="delivery_date"
+                           value="{{ object.delivery_date|date:'Y-m-d\TH:i:s' }}"/>
                 </div>
             </div>
             <div class="row g-3">
                 <div class="col-md-6">
-                    <label for="vendor" class="form-label">Vendor</label>
-                    <select id="vendor" name="receive_vendor" class="form-control">
+                    <label for="customer" class="form-label">Customer</label>
+                    <select id="customer" name="customer" class="form-control">
                         <option>-- กรุณาเลือก --</option>
-                        {% for vendor in vendor_list %}
-                            {% if object.vendor.vendor_id == vendor.vendor_id %}
-                                <option selected value="{{ vendor.vendor_id }}">{{ vendor.vendor_name }}</option>
+                        {% for customer in customer_list %}
+                            {% if object.customer.customer_id == customer.customer_id %}
+                                <option selected value="{{ customer.customer_id }}">{{ customer.customer_short_name }}</option>
                             {% else %}
-                                <option value="{{ vendor.vendor_id }}">{{ vendor.vendor_name }}</option>
+                                <option value="{{ customer.customer_id }}">{{ customer.customer_short_name }}</option>
                             {% endif %}
                         {% endfor %}
                     </select>
                 </div>
-                <div class="col-md-6">
-                    <label for="amount" class="form-label">Amount</label>
-                    <input readonly type="number" class="form-control" id="amount" name="receive_amount"
-                           value="{{ object.receive_amount }}"/>
-                </div>
             </div>
-            <input type="hidden" name="receive_id" value="{{ object.receive_id|default:"" }}">
+            <input type="hidden" name="delivery_id" value="{{ object.delivery_id|default:"" }}">
         </form>
         <br/>
         <div class="row">
@@ -57,7 +52,7 @@
         </div>
         <div class="row">
             <div class="col-md-12 text-end">
-                {% if object.receive_id %}
+                {% if object.delivery_id %}
                     <button class="btn btn-primary" type="button" data-bs-toggle="modal"
                             data-bs-target="#staticBackdrop">
                         Add
@@ -67,7 +62,7 @@
                         Add
                     </button>
                 {% endif %}
-                {% include "receives/dlg-detail.html" %}
+                {% include "delivery/dlg-detail.html" %}
             </div>
         </div>
         <div class="row">
@@ -98,7 +93,7 @@
                                 </td>
                                 <td>
                                     <form method="POST"
-                                          action="/receives/{{ object.receive_id|default:'' }}/details/{{ detail.receive_detail_id|default:'' }}/action/delete"
+                                          action="/deliveries/{{ object.delivery_id|default:'' }}/details/{{ detail.delivery_detail_id|default:'' }}/action/delete"
                                           enctype="application/x-www-form-urlencoded">
                                         {% csrf_token %}
                                         <button class="btn btn-secondary" type="submit">Delete
@@ -128,14 +123,14 @@
             $('#product').val(product_id);
             $('#qty').val(qty);
             $('#cost').val(cost);
-            $('#po').val(po);
+            $('#so').val(po);
             updateAmount();
             myModal.show();
         }
 
         function updateAmount() {
             let txtQty = $('#qty');
-            let txtCost = $('#cost');
+            let txtCost = $('#price');
             let qty = txtQty.val() ? txtQty.val() : "0";
             let cost = txtCost.val() ? txtCost.val() : "0";
             $('#detailAmount').val(cost * qty);
@@ -143,7 +138,7 @@
 
         $(function () {
             $('#qty').change(() => updateAmount());
-            $('#cost').change(() => updateAmount());
+            $('#price').change(() => updateAmount());
         });
     </script>
 {% endblock %}
