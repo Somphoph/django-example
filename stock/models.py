@@ -66,5 +66,9 @@ class DeliveryOrderDetail(models.Model):
 
 
 class DeliveryOrderDetailReceiveUpdate(models.Model):
-    delivery_receive_id = models.AutoField(primary_key=True)
+    receive_detail = models.OneToOneField(
+        ReceiveOrderDetail,
+        on_delete=models.CASCADE,
+        primary_key=True,
+    )
     sum_of_delivery_detail_qty = models.IntegerField()

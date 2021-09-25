@@ -1,11 +1,12 @@
-from django.db.models import F
+from django.db.models import F, OuterRef, Subquery, Exists, Q
 from django.db.models.aggregates import Sum
 from django.http import HttpResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from django.template import loader
 from django.views import generic
 
-from stock.models import ReceiveOrder, Vendor, Product, DeliveryOrder, Customer, DeliveryOrderDetail, ReceiveOrderDetail
+from stock.models import ReceiveOrder, Vendor, Product, DeliveryOrder, Customer, DeliveryOrderDetail, \
+    ReceiveOrderDetail, DeliveryOrderDetailReceiveUpdate
 
 
 class ReceiveIndexView(generic.ListView):
@@ -44,7 +45,7 @@ def receive_add(request):
         if not request.POST['receive_id']:
             post = request.POST
             vendor = get_object_or_404(Vendor, pk=post['receive_vendor'])
-            receive = ReceiveOrder(receive_no=post['receive_no'], receive_vendor=vendor,
+            receive = ReceiveOrder(receive_no=post['receive_no'], vendor=vendor,
                                    receive_date=post['receive_date'], receive_amount=0)
             receive.save()
             return redirect('/receives/' + str(receive.receive_id))
@@ -62,8 +63,7 @@ def receive_detail_add(request, receive_id):
                                         cost=post['cost'], po=post['po'], receive=receive)
             detail.save()
             receive = get_object_or_404(ReceiveOrder, pk=receive_id)
-            receive.receive_amount = ReceiveOrder.objects.filter(
-                receive_id=receive_id).aggregate(total=Sum(F('qty') * F('cost'))).get('total')
+            update_receive_order_amount(receive_id)
             receive.save()
             return redirect('/receives/' + str(receive.receive_id))
     else:
@@ -101,8 +101,14 @@ def receive_detail_delete(request, receive_id, detail_id):
 
 def update_receive_order_amount(receive_id):
     receive = get_object_or_404(ReceiveOrder, pk=receive_id)
-    receive.receive_amount = ReceiveOrder.objects.filter(
+    total = ReceiveOrderDetail.objects.filter(
         receive_id=receive_id).aggregate(total=Sum(F('qty') * F('cost'))).get('total')
+
+    if total is not None:
+        receive.receive_amount=total
+    else:
+        receive.receive_amount=0
+
     receive.save()
 
 
@@ -130,7 +136,11 @@ def delivery_edit(request, delivery_id):
     customer_list = Customer.objects.order_by('-customer_short_name')
     detail_list = DeliveryOrderDetail.objects.filter(
         delivery_id=delivery_id).order_by('-delivery_detail_id')
-    receive_detail_list = ReceiveOrderDetail.objects.order_by('-receive_detail_id')
+    subquery = DeliveryOrderDetailReceiveUpdate.objects.filter(receive_detail=OuterRef("pk"))[:1].values(
+        'sum_of_delivery_detail_qty')
+    receive_detail_list = ReceiveOrderDetail.objects.filter(
+        Q(qty__gt=Subquery(subquery)) | Q(~Exists(subquery))).order_by('-receive_detail_id')
+    print(receive_detail_list.query)
     return render(request, 'delivery/edit.html',
                   {'customer_list': customer_list, 'object': delivery, 'detail_list': detail_list,
                    'product_list': product_list, 'receive_detail_list': receive_detail_list})
@@ -162,6 +172,7 @@ def delivery_detail_add(request, delivery_id):
             detail.save()
             obj = get_object_or_404(DeliveryOrder, pk=delivery_id)
             obj.save()
+            update_delivery_amount(delivery_id)
             return redirect('/deliveries/' + str(obj.delivery_id))
     else:
         return HttpResponse(status=404)
@@ -169,17 +180,19 @@ def delivery_detail_add(request, delivery_id):
 
 def delivery_detail_edit(request, delivery_id, detail_id):
     if request.method == 'POST':
-        if not delivery_id:
+        if delivery_id is not None:
             detail = get_object_or_404(DeliveryOrderDetail, pk=detail_id)
             post = request.POST
             detail.product_id = post['product_id']
             detail.qty = post['qty']
-            detail.cost = post['cost']
-            detail.po = post['po']
+            detail.price = post['price']
+            detail.so = post['so']
             detail.receive_detail_id = post['receive_detail_id']
             detail.save()
-
+            update_delivery_amount(delivery_id)
             return redirect('/deliveries/' + str(delivery_id))
+        else:
+            return HttpResponse(status=404)
     else:
         return HttpResponse(status=404)
 
@@ -188,16 +201,20 @@ def delivery_detail_delete(request, delivery_id, detail_id):
     if request.method == 'POST':
         detail = get_object_or_404(DeliveryOrderDetail, pk=detail_id)
         detail.delete()
+        update_delivery_amount(delivery_id)
         return redirect('/deliveries/' + str(delivery_id))
     else:
         return HttpResponse(status=404)
 
 
-def update_receive_order_amount(receive_id):
-    receive = get_object_or_404(ReceiveOrder, pk=receive_id)
-    receive.receive_amount = ReceiveOrderDetail.objects.filter(
-        receive_id=receive_id).aggregate(total=Sum(F('qty') * F('cost'))).get('total')
-    receive.save()
+def update_delivery_amount(delivery_id):
+    detail_list = DeliveryOrderDetail.objects.filter(delivery_id=delivery_id)
+    for detail in detail_list:
+        total = DeliveryOrderDetail.objects.filter(receive_detail_id=detail.receive_detail_id).aggregate(
+            total=Sum('qty')).get('total')
+        update = DeliveryOrderDetailReceiveUpdate(receive_detail_id=detail.receive_detail_id,
+                                                  sum_of_delivery_detail_qty=total)
+        update.save()
 
 
 def index(request):

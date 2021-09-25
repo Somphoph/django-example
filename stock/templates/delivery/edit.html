@@ -137,6 +137,7 @@
             $('#so').val(po);
             $('#receive_detail_id').val(receive_detail_id);
             $('#receive_no').val(receive_no);
+            $('#frmDeliveryDetail').prop('action', '/deliveries/{{ object.delivery_id|default:'' }}/details/' + receive_detail_id);
 
             updateAmount();
             myModal.show();

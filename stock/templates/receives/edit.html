@@ -99,8 +99,7 @@
                                 </td>
                                 <td>
                                     <form method="POST"
-                                          action="/receives/{{ object.receive_id|default:'' }}/details/
-                                                  {{ detail.receive_detail_id|default:'' }}/action/delete"
+                                          action="/receives/{{ object.receive_id|default:'' }}/details/{{ detail.receive_detail_id|default:'' }}/action/delete"
                                           enctype="application/x-www-form-urlencoded">
                                         {% csrf_token %}
                                         <button class="btn btn-secondary" type="submit">Delete
