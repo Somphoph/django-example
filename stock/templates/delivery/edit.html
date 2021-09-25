@@ -11,7 +11,9 @@
                 <div class="col-md-12 text-end">
                     <div class="btn-group" role="group" aria-label="Control">
                         <button class="btn btn-primary" type="submit">Save</button>
-                        <button class="btn btn-secondary" type="button" onclick="location.href='/deliveries/view'">Cancel</button>
+                        <button class="btn btn-secondary" type="button" onclick="location.href='/deliveries/view'">
+                            Cancel
+                        </button>
                     </div>
                 </div>
             </div>
@@ -34,7 +36,8 @@
                         <option>-- กรุณาเลือก --</option>
                         {% for customer in customer_list %}
                             {% if object.customer.customer_id == customer.customer_id %}
-                                <option selected value="{{ customer.customer_id }}">{{ customer.customer_short_name }}</option>
+                                <option selected
+                                        value="{{ customer.customer_id }}">{{ customer.customer_short_name }}</option>
                             {% else %}
                                 <option value="{{ customer.customer_id }}">{{ customer.customer_short_name }}</option>
                             {% endif %}
@@ -62,7 +65,7 @@
                         Add
                     </button>
                 {% endif %}
-                {% include "delivery/dlg-detail.html" %}
+
             </div>
         </div>
         <div class="row">
@@ -84,9 +87,11 @@
                             <tr>
                                 <td>{{ detail.product }}</td>
                                 <td>{{ detail.qty }}</td>
-                                <td>{{ detail.cost }}</td>
-                                <td>{{ detail.po }}</td>
+                                <td>{{ detail.price }}</td>
+                                <td>{{ detail.so }}</td>
                                 <td style="display:none;">{{ detail.product.product_id }}</td>
+                                <td style="display:none;">{{ detail.receive_detail.receive_detail_id }}</td>
+                                <td style="display:none;">{{ detail.receive_detail.receive.receive_no }}</td>
                                 <td>
                                     <button class="btn btn-primary" type="button" onclick="editClick(this)">Edit
                                     </button>
@@ -109,26 +114,35 @@
             </div>
         </div>
     </div>
+    {% include "delivery/dlg-detail.html" %}
+    {% include "delivery/dlg-select-receive.html" %}
     <script>
         let myModal = new bootstrap.Modal(document.getElementById('staticBackdrop'));
+        let receiveModal = new bootstrap.Modal(document.getElementById('receiveModal'));
 
         function editClick(o) {
             let row = $(o).parent().parent();
             let product_id = row.find('td:nth-child(5)').text();
+            let product = row.find('td:nth-child(1)').text();
             let qty = row.find('td:nth-child(2)').text();
             let cost = row.find('td:nth-child(3)').text();
             let po = row.find('td:nth-child(4)').text();
+            let receive_detail_id = row.find('td:nth-child(6)').text();
+            let receive_no = row.find('td:nth-child(7)').text();
 
-            console.log(product_id);
-            $('#product').val(product_id);
+            $('#product_id').val(product_id);
+            $('#product').val(product);
             $('#qty').val(qty);
-            $('#cost').val(cost);
+            $('#price').val(cost);
             $('#so').val(po);
+            $('#receive_detail_id').val(receive_detail_id);
+            $('#receive_no').val(receive_no);
+
             updateAmount();
             myModal.show();
         }
 
-        function updateAmount() {
+        let updateAmount = () => {
             let txtQty = $('#qty');
             let txtCost = $('#price');
             let qty = txtQty.val() ? txtQty.val() : "0";

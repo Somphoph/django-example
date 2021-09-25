@@ -3,7 +3,7 @@
 {% block title %}Receive Detail{% endblock %}
 
 {% block content %}
-    <form action="/receives/{{ object.receive_id|default:'' }}/details/{{ detail.receive_detail_id|default:'' }}"
+    <form id="frmReceiveDetail" action="/receives/{{ object.receive_id|default:'' }}/details/{{ detail.receive_detail_id|default:'' }}"
           enctype="application/x-www-form-urlencoded" method="post">
     {% csrf_token %}
         <input type="hidden" name="receive_id" value="{{ object.receive_id|default:'' }}"/>

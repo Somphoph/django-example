@@ -92,13 +92,15 @@
                                 <td>{{ detail.cost }}</td>
                                 <td>{{ detail.po }}</td>
                                 <td style="display:none;">{{ detail.product.product_id }}</td>
+                                <td style="display: none">{{ detail.receive_detail_id }}</td>
                                 <td>
                                     <button class="btn btn-primary" type="button" onclick="editClick(this)">Edit
                                     </button>
                                 </td>
                                 <td>
                                     <form method="POST"
-                                          action="/receives/{{ object.receive_id|default:'' }}/details/{{ detail.receive_detail_id|default:'' }}/action/delete"
+                                          action="/receives/{{ object.receive_id|default:'' }}/details/
+                                                  {{ detail.receive_detail_id|default:'' }}/action/delete"
                                           enctype="application/x-www-form-urlencoded">
                                         {% csrf_token %}
                                         <button class="btn btn-secondary" type="submit">Delete
@@ -123,12 +125,13 @@
             let qty = row.find('td:nth-child(2)').text();
             let cost = row.find('td:nth-child(3)').text();
             let po = row.find('td:nth-child(4)').text();
-
+            let receive_detail_id = row.find('td:nth-child(6)').text();
             console.log(product_id);
             $('#product').val(product_id);
             $('#qty').val(qty);
             $('#cost').val(cost);
             $('#po').val(po);
+            $('#frmReceiveDetail').prop('action', '/receives/{{ object.receive_id|default:'' }}/details/' + receive_detail_id);
             updateAmount();
             myModal.show();
         }

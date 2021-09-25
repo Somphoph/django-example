@@ -1,0 +1,51 @@
+{% extends "static-modal.html" %}
+{% block title %}Order Detail{% endblock %}
+{% block id %}receiveModal{% endblock %}
+{% block content %}
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Receive No.</th>
+            <th>Product</th>
+            <th>Qty</th>
+            <th>Cost</th>
+            <th>PO</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if receive_detail_list %}
+            {% for detail in receive_detail_list %}
+                <tr onclick="rowClick(this)">
+                    <td>{{ detail.receive.receive_no }}</td>
+                    <td>{{ detail.product }}</td>
+                    <td>{{ detail.qty }}</td>
+                    <td>{{ detail.cost }}</td>
+                    <td>{{ detail.po }}</td>
+                    <td style="display:none;">{{ detail.product.product_id }}</td>
+                    <td style="display:none;">{{ detail.receive_detail_id }}</td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="4">No receive are available.</td>
+            </tr>
+        {% endif %}
+        </tbody>
+    </table>
+    <script type="application/javascript">
+        let rowClick = (o) => {
+            let product_id = $(o).find('td:nth-child(6)').text();
+            let product_name = $(o).find('td:nth-child(2)').text();
+            let receive_no =$(o).find('td:nth-child(1)').text();
+            let receive_detail_id = $(o).find('td:nth-child(7)').text();
+
+            $('#product').val(product_name);
+            $('#product_id').val(product_id);
+            $('#receive_no').val(receive_no);
+            $('#receive_detail_id').val(receive_detail_id);
+
+            receiveModal.hide();
+            myModal.show();
+        }
+    </script>
+{% endblock %}

@@ -1,29 +1,38 @@
 {% extends "static-modal.html" %}
 
-{% block title %}Receive Detail{% endblock %}
+{% block title %}Delivery Detail{% endblock %}
 
 {% block content %}
     <form action="/deliveries/{{ object.delivery_id|default:'' }}/details/{{ detail.receive_detail_id|default:'' }}"
           enctype="application/x-www-form-urlencoded" method="post">
-    {% csrf_token %}
+        {% csrf_token %}
         <input type="hidden" name="delivery_id" value="{{ object.delivery_id|default:'' }}"/>
-        <input type="hidden" name="receive_detail_id" value="{{ detail.receive_detail_id }}"/>
         <div class="modal-body">
             <div class="container">
                 <div class="row g-3">
                     <div class="col-md-6">
+                        <label for="product" class="form-label">Receive No</label>
+                        <div class="input-group mb-3">
+                            <input class="form-control" type="text" id="receive_no" readonly/>
+                            <input class="form-control" type="hidden" id="receive_detail_id" name="receive_detail_id" />
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal"
+                                        data-bs-target="#receiveModal" data-bs-dismiss="modal" >Browse
+                                </button>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="available" class="form-label">Available</label>
+                        <input type="number" class="form-control" id="available" readonly/>
+                    </div>
+                </div>
+                <div class="row g-3">
+                    <div class="col-md-6">
                         <label for="product" class="form-label">Product</label>
-                        <select name="product_id" id="product" class="form-control">
-                            <option>-- กรุณาเลือก --</option>
-                            {% for product in product_list %}
-                                {% if detail.product.product_id == product.product_id %}
-                                    <option selected
-                                            value="{{ product.product_id }}">{{ product.product_name }}</option>
-                                {% else %}
-                                    <option value="{{ product.product_id }}">{{ product.product_name }}</option>
-                                {% endif %}
-                            {% endfor %}
-                        </select>
+                        <input class="form-control" type="text" id="product" readonly/>
+                        <input type="hidden" id="product_id" name="product_id"/>
                     </div>
                     <div class="col-md-6">
                         <label for="qty" class="form-label">QTY</label>
@@ -37,7 +46,7 @@
                     </div>
                     <div class="col-md-6">
                         <label for="detail_amount" class="form-label">Amount</label>
-                        <input readonly name="amount" type="number" class="form-control" id="detailAmount" />
+                        <input readonly name="amount" type="number" class="form-control" id="detailAmount"/>
                     </div>
                 </div>
                 <div class="row g-3">

@@ -40,11 +40,12 @@ class ReceiveOrder(models.Model):
 
 class ReceiveOrderDetail(models.Model):
     receive_detail_id = models.AutoField(primary_key=True)
-    receive_id = models.IntegerField()
+    receive = models.ForeignKey(ReceiveOrder, on_delete=models.PROTECT)
     product = models.ForeignKey(Product, on_delete=models.PROTECT)
     qty = models.IntegerField()
     cost = models.DecimalField(max_digits=6, decimal_places=2)
     po = models.CharField(max_length=10)
+    do_qty = models.IntegerField(default=0)
 
 
 class DeliveryOrder(models.Model):
@@ -61,7 +62,7 @@ class DeliveryOrderDetail(models.Model):
     qty = models.IntegerField()
     price = models.DecimalField(max_digits=6, decimal_places=2)
     so = models.CharField(max_length=10)
-    delivery_receive_id = models.IntegerField()
+    receive_detail = models.ForeignKey(ReceiveOrderDetail, models.PROTECT)
 
 
 class DeliveryOrderDetailReceiveUpdate(models.Model):

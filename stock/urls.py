@@ -19,7 +19,7 @@ urlpatterns = [
                   path('deliveries/<int:delivery_id>/details/', views.delivery_detail_add, name="delivery_detail_add"),
                   path('deliveries/<int:delivery_id>/details/<int:detail_id>', views.delivery_detail_edit,
                        name="delivery_detail_edit"),
-                  path('receives/<int:delivery_id>/details/<int:detail_id>/action/delete', views.delivery_detail_delete,
+                  path('deliveries/<int:delivery_id>/details/<int:detail_id>/action/delete', views.delivery_detail_delete,
                        name="delivery_detail_delete"),
 
               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
